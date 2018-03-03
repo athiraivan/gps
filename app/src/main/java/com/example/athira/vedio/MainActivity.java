@@ -10,15 +10,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.VideoView;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-  private   Button location;
+    private   Button location;
   private EditText phn;
+    private FirebaseUser user;
   FirebaseDatabase database;
   DatabaseReference myref;
+    Calendar calander;
+    SimpleDateFormat simpledateformat;
+    String Date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +40,11 @@ public class MainActivity extends AppCompatActivity {
         location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 GPStracker g= new GPStracker(getApplicationContext());
+                calander = Calendar.getInstance();
+                simpledateformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                Date = simpledateformat.format(calander.getTime());
+
+                GPStracker g= new GPStracker(getApplicationContext());
                 Location l = g.getLocation();
                 if(l!=null)
                 {
@@ -39,9 +53,10 @@ public class MainActivity extends AppCompatActivity {
                     double lon = l.getLongitude();
                     myref = database.getReference("users").child(child);
                     myref.child("latitude").setValue(lat);
-                    myref.child("long").setValue(lon);
+                    myref.child("longitude").setValue(lon);
+                    myref.child("date").setValue(Date);
 
-
+                    
                     Toast.makeText(getApplicationContext(),"LAT:"+lat+"\n LONG:"+lon,Toast.LENGTH_LONG).show();
 
                 }
